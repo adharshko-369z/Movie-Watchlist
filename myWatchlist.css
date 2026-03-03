@@ -1,0 +1,18 @@
+.index-link{
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .2em;
+}
+
+.my-movies-list{
+    max-width: 90vw;
+    margin: 2em auto;
+}
+
+.minus-icon{
+    width: 25px;
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Watchlist</title>
+    <!-- css -->
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="myWatchlist.css">
+    <!-- font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+</head>
+<body class="mybody" id="mybody">
+    <header>
+        <h1>My Watchlist</h1>
+        <a href="index.html">Search for movies</a>
+    </header>
+    <main>
+        <section id="my-movies-list" class="my-movies-list">
+            
+        </section>
+        <section class="watchlist-placeholder-container placeholder-container" id="watchlist-placeholder-container">
+                <p>Your watchlist is looking a little empty...</p>
+                <a href="index.html" class="index-link">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" 
+                    fill="currentColor" 
+                    class="size-6 add-icon">
+                    <path fill-rule="evenodd" 
+                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" 
+                    clip-rule="evenodd" />
+                </svg>
+                Let's add some movies!
+                </a>
+        </section>
+    </main>
+    <script src="index.js"></script>
+    <script src="myWatchlist.js"></script>
+</body>
+</html>
