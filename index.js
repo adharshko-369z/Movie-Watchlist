@@ -4,7 +4,7 @@ document.getElementById('search-form')?.addEventListener('submit',(e)=>{
     e.preventDefault()
     let searchValue = document.getElementById('search-input').value
     
-    fetch(`http://www.omdbapi.com/?apikey=554d6fa1&s=${searchValue}`)
+    fetch(`https://www.omdbapi.com/?apikey=554d6fa1&s=${searchValue}`)
         .then(res => res.json())
         .then(data => {
             for(movie of data.Search){
@@ -27,7 +27,7 @@ let htmlStr = ''
 
 function getId(dataid){
     htmlStr = ''
-    fetch(`http://www.omdbapi.com/?apikey=554d6fa1&i=${dataid}`)
+    fetch(`https://www.omdbapi.com/?apikey=554d6fa1&i=${dataid}`)
             .then(res => res.json())
             .then(data => {
                 htmlStr += `
@@ -92,7 +92,7 @@ let myWishlistStr = ''
 document.addEventListener("click", e =>{
    for(id of filmId){
     if(id===e.target.id){  
-        fetch(`http://www.omdbapi.com/?apikey=554d6fa1&i=${e.target.id}`)
+        fetch(`https://www.omdbapi.com/?apikey=554d6fa1&i=${e.target.id}`)
             .then(res => res.json())
             .then(data => {
                 myWishlistStr   = {
