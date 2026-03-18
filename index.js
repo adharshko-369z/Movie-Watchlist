@@ -26,7 +26,6 @@ document.getElementById('search-form')?.addEventListener('submit',(e)=>{
 let htmlStr = ''
 
 function getId(dataid){
-    htmlStr = ''
     fetch(`https://www.omdbapi.com/?apikey=554d6fa1&i=${dataid}`)
             .then(res => res.json())
             .then(data => {
@@ -121,12 +120,3 @@ document.addEventListener("click", e =>{
    }
    
 })
-
-
-
-
-
-  
-
-
-
