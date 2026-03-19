@@ -173,7 +173,8 @@ header a{
     max-height: 60vh;
 }
 
-.add-watchlist-btn{
+.add-watchlist-btn,
+.remove-watchlist-btn{
     z-index: 3;
     border: none;
     background-color: white;

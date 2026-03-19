@@ -1,40 +1,64 @@
-let filmId = []
+const apikey = window.MOVIE_WACTHLIST_API
 
-document.getElementById('search-form')?.addEventListener('submit',(e)=>{
+
+let movieListArr = []
+
+document.getElementById('search-form').addEventListener("submit",async e => {
     e.preventDefault()
-    let searchValue = document.getElementById('search-input').value
-    
-    fetch(`https://www.omdbapi.com/?apikey=554d6fa1&s=${searchValue}`)
-        .then(res => res.json())
-        .then(data => {
-            for(movie of data.Search){
-            getId(movie.imdbID)
-            filmId.push(movie.imdbID)
-            }
-        })
-        .catch(err => {
+    let searchValue = document.getElementById('search-input').value 
+   
+    try{
+        const SearchResponses = await fetch(`https://www.omdbapi.com/?apikey=${apikey}&s=${searchValue}`)
+        const datas = await SearchResponses.json()
+        if(datas.Search){
+            const promises = datas.Search.map(data=>getId(data.imdbID))
+            const results = await Promise.all(promises)
+            movieListArr = results
+            renderMovieList(movieListArr)
+        }else{
             document.getElementById('search-input').setAttribute("placeholder","Searching something with no data")
             document.getElementById('movies-list').innerHTML = `
             <p class='error-message'>Unable to find what you're looking for. Please try another search.</p>
             `
-        })
-
-    document.getElementById('search-input').value = ''
-
+        }
+    }catch(error){
+        console.log(error)
+    }finally{
+        document.getElementById('search-input').value=''
+    }
 })
 
-let htmlStr = ''
 
-function getId(dataid){
-    fetch(`https://www.omdbapi.com/?apikey=554d6fa1&i=${dataid}`)
-            .then(res => res.json())
-            .then(data => {
-                htmlStr += `
-                <div class='movie-details-container'>
-                    <img class='movie-poster' src='${data.Poster}' alt='${data.Title} poster'/>
+async function getId(id){
+    
+    try{
+        const detailedResponses = await fetch(`https://www.omdbapi.com/?apikey=${apikey}&i=${id}`)
+        const datas =  await detailedResponses.json()
+        return(
+            {
+                'Id':datas.imdbID,
+                'Poster': datas.Poster,
+                'Title': datas.Title,
+                'Rating': datas.imdbRating,
+                'RunTime': datas.Runtime,
+                'Genre':datas.Genre,
+                'Plot': datas.Plot
+            }
+        )
+    }catch(error){
+        console.log(error)
+    }
+
+}
+
+
+function renderMovieList(movieList){
+    let renderListTemplate = movieList.map(movie =>{
+         return `<div class='movie-details-container'>
+                    <img class='movie-poster' src='${movie.Poster}' alt='${movie.Title} poster'/>
                     <div class='movie-details'>
                         <div class='title-and-rate'>
-                            <h2>${data.Title}</h2>
+                            <h2>${movie.Title}</h2>
                             <p class='movie-rating'>
                             <svg xmlns="http://www.w3.org/2000/svg" 
                             viewBox="0 0 24 24" 
@@ -44,7 +68,7 @@ function getId(dataid){
                             d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" c
                             lip-rule="evenodd" />
                             </svg>
-                            ${data.imdbRating}
+                            ${movie.Rating}
                             </p>
                             <svg xmlns="http://www.w3.org/2000/svg" 
                             viewBox="0 0 24 24" 
@@ -57,9 +81,9 @@ function getId(dataid){
                             </svg>
                         </div>
                         <div class='runtime-genre-watchlist'>
-                            <p>${data.Runtime}</p>
-                            <p>${data.Genre}</p>
-                            <button class='add-watchlist-btn' id='${data.imdbID}'>
+                            <p>${movie.RunTime}</p>
+                            <p>${movie.Genre}</p>
+                            <button class='add-watchlist-btn' id='${movie.Id}'>
                             <svg xmlns="http://www.w3.org/2000/svg" 
                             viewBox="0 0 24 24" 
                             fill="currentColor" 
@@ -71,52 +95,39 @@ function getId(dataid){
                             Watchlist
                             </button>
                         </div>
-                        <p class='movie-plot'>${data.Plot}</p>
+                        <p class='movie-plot'>${movie.Plot}</p>
                     </div>
                 </div>
                 `
-                renderMovieList(htmlStr)
-            })
+    }) 
+    return document.getElementById("movies-list").innerHTML = renderListTemplate.join("")
 }
 
-function renderMovieList(string){
-    const moviesList = document.getElementById('movies-list')
-    moviesList.innerHTML = string
-}
 
 let myWishlistArr = JSON.parse(localStorage.getItem('MyWishlistMovieDetails')) || []
 
-let myWishlistStr = ''
+document.addEventListener("click",e=>{
+    let movieWatchlistAddBtn = e.target.closest(".add-watchlist-btn")
+    if(movieWatchlistAddBtn){
+      const myWishlistAddedMovie = movieListArr.find(movie=> movie.Id === movieWatchlistAddBtn.id)
 
-document.addEventListener("click", e =>{
-   for(id of filmId){
-    if(id===e.target.id){  
-        fetch(`https://www.omdbapi.com/?apikey=554d6fa1&i=${e.target.id}`)
-            .then(res => res.json())
-            .then(data => {
-                myWishlistStr   = {
-                    'Id':data.imdbID,
-                    'Poster': data.Poster,
-                    'Title': data.Title,
-                    'Rating': data.imdbRating,
-                    'RunTime': data.Runtime,
-                    'Genre':data.Genre,
-                    'Plot': data.Plot
-                }
-
-               let isDuplicate = myWishlistArr.some(movie => movie.Id === myWishlistStr.Id)
-
-               if(!isDuplicate){
-                myWishlistArr.unshift(myWishlistStr)
-               }else{
-                    console.log("its duplicate")
-               }
-
-                return localStorage.setItem('MyWishlistMovieDetails',JSON.stringify(myWishlistArr))
-            })
-            
-    }
-
-   }
-   
+      if(myWishlistAddedMovie){
+        avoidDuplicateObj(myWishlistAddedMovie)
+      }
+    } 
+    
 })
+
+
+function avoidDuplicateObj(movieObj){
+    let isDuplicate = myWishlistArr.some(movie => movie.Id === movieObj.Id)
+    if(!isDuplicate){
+        myWishlistArr.unshift(movieObj)
+    }
+    return localStorage.setItem("MyWishlistMovieDetails", JSON.stringify(myWishlistArr))
+}
+
+
+
+    
+MOVIE_WACTHLIST_API
