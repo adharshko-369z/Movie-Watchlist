@@ -130,4 +130,3 @@ function avoidDuplicateObj(movieObj){
 
 
     
-MOVIE_WACTHLIST_API
